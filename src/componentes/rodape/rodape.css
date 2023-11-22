@@ -1,0 +1,12 @@
+.rodape{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    
+    background-color: #1dd1a1;
+    position: fixed;
+    bottom: 0;
+
+    width: 100%;
+    
+}

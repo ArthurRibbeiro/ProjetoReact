@@ -1,0 +1,106 @@
+.cadBody{
+    display: flex;
+    flex-direction: row;
+    align-items:baseline ;
+    color:rgb(184, 184, 184); 
+}
+
+.inputCombo{
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    align-items: baseline;
+
+    
+}
+
+.inputCombo input{
+    width: 300px;
+    height: 30px;
+    border-radius: 5px;
+    border: 0;
+
+
+}
+
+.formContainer{
+    padding: 30px;
+    margin: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    border: 2px;
+    border-style: solid;
+    border-radius: 8px;
+    border-color: #576574;
+
+    
+    
+}
+
+.formContainer button{
+    margin: 20px;
+    padding: 10px;
+    width: 100%;
+    border: solid 2px;
+    background-color: #576574;
+    border-color: #576574;
+    border-radius: 8px;
+    color: #222f3e;
+
+    font-size: 18px;
+    font-weight: bold;
+
+
+
+}
+
+.formContainer button:hover{
+    background:transparent;
+    border-radius: 8px;
+    color: #576574;
+
+}
+
+.dataContainer{
+    width: 100%;
+}
+
+.dataContainer tr{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+
+
+}
+
+.thHidden{
+    visibility: hidden;
+}
+
+.dataSpace{
+    width: 100%;
+}
+
+.dataSpace button{
+    margin: 10px;
+    padding: 5px 2px;
+    width: 100%;
+    border: solid 2px;
+    background-color: #576574;
+    border-color: #576574;
+    border-radius: 8px;
+    color: #222f3e;
+
+    font-size: 12px;
+    font-weight: bold;
+
+}
+
+.dataSpace button:hover{
+    background:transparent;
+    border-radius: 8px;
+    color: #576574;
+
+}
