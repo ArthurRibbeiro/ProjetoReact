@@ -1,71 +1,131 @@
 
 
-import { useState, useEffect } from 'react';
-import './cadastroCurso.css'
+import {useState} from 'react';
 
-function carrega(){
-        const cursos = localStorage.getItem('cursos')
-        return cursos ? JSON.parse(cursos) : [[], 1];
-}
 
-function editar(){
-
-} 
-
-function excluir(evt){
-    const elemID = evt.target.parentElement.parentElement.firstChild.innerText
-    console.log(elemID);
-    const cursos = carrega()
-    let index = 0
-    cursos[0].map(i => {
-        if (i.idCurso == elemID) {
-            cursos[0].splice(index, 1);
-        }else{
-            index ++
-        }
-        localStorage.setItem("cursos", JSON.stringify([cursos[0], cursos[1]]));
+function CadCurso(){    
     
-    })
+    function carrega(){
+            const cursos = localStorage.getItem('cursos')
+            return cursos ? JSON.parse(cursos) : [[], 1];
+    }
+    const [exibirExcluir, setExibirExcluir] = useState(true)
 
-
-}
-
-
-function Form(){
-    const [cursos, setCursos] = useState(carrega());
-
-
-    const [idCurso, setIdCurso] = useState(cursos[1])
+    const aux = carrega()
+    const [cursos, setCursos] = useState(aux[0]);
+    
+    const [idCurso, setIdCurso] = useState(aux[1])
     const [nomeCurso, setNomeCurso] = useState('')
     const [dtInicioCurso, setDtInicioCurso] = useState('')
     const [nomeCoordCurso, setNomeCoordCurso] = useState('')
 
-    function onClick() {
-        setCursos((prevCursos) => {
-          // Carrega o estado mais recente
-          const cursosAtualizados = carrega();
-      
-          // Cria uma cópia do array de cursos e adiciona o novo curso
-          const novaListaCursos = [...cursosAtualizados[0], {
-            idCurso: idCurso,
+    function limpaForm(){
+        setNomeCurso('')
+        setDtInicioCurso('')
+        setNomeCoordCurso('')
+    }
+
+    
+    function cadastrar() {
+        const novoCurso = {
+            idCurso : idCurso,
             nomeCurso: nomeCurso,
             dtInicioCurso: dtInicioCurso,
             nomeCoordCurso: nomeCoordCurso,
-          }];
-      
-          // Atualiza o localStorage com a nova lista de cursos
-          localStorage.setItem("cursos", JSON.stringify([novaListaCursos, idCurso + 1]));
-      
-          // Atualiza o estado com a nova lista de cursos
-          return [novaListaCursos, idCurso + 1];
-        });
-      
-        // Atualiza o ID
-        setIdCurso(idCurso + 1);
-      }
+        } 
 
+        const newCursos = [ ...cursos, novoCurso]
+
+        localStorage.setItem("cursos", JSON.stringify([newCursos, idCurso + 1]));
+        setCursos(newCursos)
+        setIdCurso (idCurso + 1)
+        limpaForm()
+
+        //limpa
+    }
+
+    
+    
+    function excluir(evt){
+        const elemID = evt.target.parentElement.parentElement.firstChild.innerText
+        let index = 0
+        const copiaCursos = [...cursos]
+        copiaCursos.map(i => {
+            if (i.idCurso == elemID) {
+                copiaCursos.splice(index, 1);
+            }else{
+                index ++
+            }
+            setCursos (copiaCursos)
+            localStorage.setItem("cursos", JSON.stringify([copiaCursos, idCurso]));
+            
+        })
+    }
+    
+    function editar(evt){
+        
+        const elemID = evt.target.parentElement.parentElement.firstChild.innerText
+        let index = 0
+        const copiaCursos = [...cursos]
+        copiaCursos.map(i => {
+            if (i.idCurso == elemID) {
+                setIdCurso(i.idCurso)
+                setNomeCurso(i.nomeCurso)
+                setDtInicioCurso(i.dtInicioCurso)
+                setNomeCoordCurso(i.nomeCoordCurso)
+            }else{
+                index ++
+            }
+
+            setExibirExcluir(false)
+            
+            document.querySelector('#btnCadastro').style.display = 'none'
+            document.querySelector('#btnSalvar').style.display = 'block'
+            
+        })
+        
+    }
+    
+    function salvar(){
+
+        const curso = {
+            idCurso : idCurso,
+            nomeCurso: nomeCurso,
+            dtInicioCurso: dtInicioCurso,
+            nomeCoordCurso: nomeCoordCurso,
+        } 
+        
+        let index = 0
+        const copiaCursos = [...cursos]
+        copiaCursos.map(i => {
+            if (i.idCurso == curso.idCurso) {
+                copiaCursos[copiaCursos.indexOf(i)] = curso
+            }else{
+                index ++
+            }})
+
+        setCursos(copiaCursos)
+
+        localStorage.setItem("cursos", JSON.stringify([copiaCursos, aux[1] ]));
+        setIdCurso(aux[1])
+        limpaForm()
+
+        setExibirExcluir(true)
+
+
+        document.querySelector('#btnSalvar').style.display = 'none'
+        document.querySelector('#btnCadastro').style.display = 'block'
+
+
+    }
+    
     return(
         <>
+        <div className="formContainer">
+                
+
+                
+
             <div className="inputCombo">
                 <label>ID</label>
                 <input id="idCurso" readOnly  value={idCurso}></input>
@@ -86,28 +146,13 @@ function Form(){
                 <input id="nomeCoordCurso"  value={nomeCoordCurso} onChange={evt => setNomeCoordCurso(evt.target.value)}></input>
             </div>
 
-            <button id='btnCadastroCurso' onClick={onClick}>Cadastrar</button>
 
-        </>
-    )
-}
+            <button id='btnCadastro' className ='btnCadastro' onClick={cadastrar}>Cadastrar</button>
+            <button id='btnSalvar' className ='btnCadastro' onClick={salvar} style={{display: 'none'}}>Salvar</button>
 
-function Tabela(){
+        </div>
+            <div className='dataSpace'>
 
-    const [cursos, setCursos] = useState(carrega());
-      
-      useEffect(() => {
-        const interval = setInterval(() => {
-          const newCursos = carrega()
-          setCursos(newCursos);
-        }, 100); // Atualiza a cada 5 segundos (ajuste conforme necessário)
-      
-        return () => clearInterval(interval);
-      }, []);
-
-    return(
-        <table>
-            <thead>
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
@@ -116,10 +161,9 @@ function Tabela(){
                     <th className='thHidden'>hidden</th>
                     <th className='thHidden'>hidden</th>
                 </tr>
-            </thead>
+        
 
-            <tbody className='dataSpace'>
-                {cursos[0].map(i => {
+                {cursos.map(i => {
                     return(
                         <tr>
                         <td>{i.idCurso}</td>
@@ -127,17 +171,18 @@ function Tabela(){
                         <td>{i.dtInicioCurso}</td>
                         <td>{i.nomeCoordCurso}</td>
                         <td><button onClick={editar}>Editar</button></td>
-                        <td><button onClick={excluir}>Excluir</button></td>
+                        <td>{exibirExcluir && (<button onClick={excluir}>Excluir</button>)}</td>
                         </tr>
                     )
                 })}
 
-            </tbody>
-        </table>
+        </div>
+
+        </>
     )
 }
 
 
  
-export default {Form, Tabela};
+export default CadCurso;
 

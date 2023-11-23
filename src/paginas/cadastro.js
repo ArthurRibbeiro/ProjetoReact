@@ -9,13 +9,7 @@ import CadDesafio from './cadastroDesafio/cadastroDesafio'
 function Cadastro(){
     return(
         <div className='cadBody'>
-            <div className="formContainer">
-                <CadCurso.Form />
-
-            </div>
-            <div className='dataContainer'>
-                <CadCurso.Tabela />
-            </div>
+            <CadCurso />
         </div>
     )
 }
