@@ -1,19 +1,12 @@
-import "./cadastro.css"
-
-
-import CadCurso from './cadastroCurso/cadastroCurso';
-import CadProf from './cadastroProfessor/cadastroProfessor'
-import CadPeriodo from './cadastroPeriodo/cadastroPeriodo'
-import CadDesafio from './cadastroDesafio/cadastroDesafio'
+import "./cadastro.css" 
+import { Outlet } from "react-router-dom";
 
 function Cadastro(){
     return(
         <div className='cadBody'>
-            <CadCurso />
+            <Outlet />
         </div>
     )
 }
 
-
-
-export default Cadastro;
+export default {Cadastro}

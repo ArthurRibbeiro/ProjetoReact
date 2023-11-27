@@ -40,8 +40,6 @@ function CadCurso(){
         setCursos(newCursos)
         setIdCurso (idCurso + 1)
         limpaForm()
-
-        //limpa
     }
 
     

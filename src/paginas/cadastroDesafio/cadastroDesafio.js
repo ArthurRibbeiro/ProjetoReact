@@ -59,54 +59,42 @@ const [exibirExcluir, setExibirExcluir] = useState(true)
         setIdDesafio (idDesafio + 1)
         limpaForm()
 
-        //limpa
     }
 
     
     
     function excluir(evt){
         const elemID = evt.target.parentElement.parentElement.firstChild.innerText
-        let index = 0
-        const copiaDesafios = [...desafios]
-        copiaDesafios.map(i => {
-            if (i.idDesafio == elemID) {
-                copiaDesafios.splice(index, 1);
-            }else{
-                index ++
-            }
-            setDesafios (copiaDesafios)
-            localStorage.setItem("desafios", JSON.stringify([copiaDesafios, idDesafio]));
+        const novosDesafios = desafios.filter(desafio => desafio.idDesafio != elemID);
+        
+            setDesafios (novosDesafios)
+            localStorage.setItem("desafios", JSON.stringify([novosDesafios, idDesafio]));
             
-        })
+        
     }
     
     function editar(evt){
         
         const elemID = evt.target.parentElement.parentElement.firstChild.innerText
         let index = 0
-        const copiaDesafios = [...desafios]
-        copiaDesafios.map(i => {
-            if (i.idDesafio == elemID) {
-                setIdDesafio(i.idDesafio)
-                setNomeDesafio(i.nomeDesafio)
-                setPeriodo(i.periodo)
-                setProfessor(i.professor) 
-                setDtInicioDesafio(i.dtInicioDesafio)
-                setDtFimDesafio(i.dtFimDesafio)
-                setDiaSemana(i.diaSemana)
-                setHorario(i.horario)
-                setSala(i.sala)
+        const i = desafios.find(desafio => desafio.idDesafio == elemID)
 
-            }else{
-                index ++
-            }
+        setIdDesafio(i.idDesafio)
+        setNomeDesafio(i.nomeDesafio)
+        setPeriodo(i.periodo)
+        setProfessor(i.professor) 
+        setDtInicioDesafio(i.dtInicioDesafio)
+        setDtFimDesafio(i.dtFimDesafio)
+        setDiaSemana(i.diaSemana)
+        setHorario(i.horario)
+        setSala(i.sala)
 
-            setExibirExcluir(false)
-            
-            document.querySelector('#btnCadastro').style.display = 'none'
-            document.querySelector('#btnSalvar').style.display = 'block'
-            
-        })
+
+        setExibirExcluir(false)
+        
+        document.querySelector('#btnCadastro').style.display = 'none'
+        document.querySelector('#btnSalvar').style.display = 'block'
+       
         
     }
     
@@ -124,6 +112,8 @@ const [exibirExcluir, setExibirExcluir] = useState(true)
             sala: sala,
             
         } 
+
+        const novosDesafios = desafios.map(d => (d.idDesafio === desafio.idDesafio ? desafio : d));
         
         let index = 0
         const copiaDesafios = [...desafios]

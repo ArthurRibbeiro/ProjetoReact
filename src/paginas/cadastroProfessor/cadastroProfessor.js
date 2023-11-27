@@ -17,6 +17,7 @@ function CadProfessor() {
     const [matricula, setMatricula] = useState('');
     const [telefoneCelular, setTelefoneCelular] = useState('');
 
+
     function limparFormulario() {
         setNomeProfessor('');
         setMatricula('');
@@ -24,6 +25,8 @@ function CadProfessor() {
     }
 
     function cadastrarProfessor() {
+
+
         const novoProfessor = {
             idProfessor: idProfessor,
             nomeProfessor: nomeProfessor,
@@ -40,11 +43,10 @@ function CadProfessor() {
     }
 
     function excluirProfessor(evt) {
-        console.log('aaaaaa');
         const elemID = evt.target.parentElement.parentElement.firstChild.innerText;
 
         const novosProfessores = professores.filter(professor => professor.idProfessor != elemID);
-        console.log(novosProfessores);
+        
         setProfessores(novosProfessores);
 
         localStorage.setItem("professores", JSON.stringify([novosProfessores, idProfessor]));
