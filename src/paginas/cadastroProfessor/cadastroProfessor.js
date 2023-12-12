@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PopUp from "../../componentes/popup/popup";
 
 function CadProfessor() {
     function carregar() {
@@ -7,6 +8,11 @@ function CadProfessor() {
     }
 
     const [exibirExcluir, setExibirExcluir] = useState(true)
+
+    const [isAlertaAtivo, setIsAlertaAtivo] = useState(false);
+    const alternarAlerta = () => {
+        setIsAlertaAtivo(!isAlertaAtivo);
+      };
 
     const aux = carregar();
 
@@ -26,20 +32,29 @@ function CadProfessor() {
 
     function cadastrarProfessor() {
 
+        
+        if (nomeProfessor == '' ||
+        matricula == '' ||
+        telefoneCelular == ''){
+            alternarAlerta()
+        }else{
+            const novoProfessor = {
+                idProfessor: idProfessor,
+                nomeProfessor: nomeProfessor,
+                matricula: matricula,
+                telefoneCelular: telefoneCelular,
+            };
+    
+            const novosProfessores = [...professores, novoProfessor];
+    
+            localStorage.setItem("professores", JSON.stringify([novosProfessores, idProfessor + 1]));
+            setProfessores(novosProfessores);
+            setIdProfessor(idProfessor + 1);
+            limparFormulario();
 
-        const novoProfessor = {
-            idProfessor: idProfessor,
-            nomeProfessor: nomeProfessor,
-            matricula: matricula,
-            telefoneCelular: telefoneCelular,
-        };
+        }
 
-        const novosProfessores = [...professores, novoProfessor];
 
-        localStorage.setItem("professores", JSON.stringify([novosProfessores, idProfessor + 1]));
-        setProfessores(novosProfessores);
-        setIdProfessor(idProfessor + 1);
-        limparFormulario();
     }
 
     function excluirProfessor(evt) {
@@ -69,28 +84,36 @@ function CadProfessor() {
     }
 
     function salvarProfessor() {
-        const professor = {
-            idProfessor: idProfessor,
-            nomeProfessor: nomeProfessor,
-            matricula: matricula,
-            telefoneCelular: telefoneCelular,
-        };
 
-        const novosProfessores = professores.map(p => (p.idProfessor === professor.idProfessor ? professor : p));
-        setProfessores(novosProfessores);
-
-        localStorage.setItem("professores", JSON.stringify([novosProfessores, aux[1]]));
-        setIdProfessor(aux[1]);
-        limparFormulario();
-
-        setExibirExcluir(true)
-
-        document.querySelector('#btnSalvar').style.display = 'none';
-        document.querySelector('#btnCadastro').style.display = 'block';
+        if (nomeProfessor == '' ||
+        matricula == '' ||
+        telefoneCelular == ''){
+            alternarAlerta()
+        }else{
+            const professor = {
+                idProfessor: idProfessor,
+                nomeProfessor: nomeProfessor,
+                matricula: matricula,
+                telefoneCelular: telefoneCelular,
+            };
+    
+            const novosProfessores = professores.map(p => (p.idProfessor === professor.idProfessor ? professor : p));
+            setProfessores(novosProfessores);
+    
+            localStorage.setItem("professores", JSON.stringify([novosProfessores, aux[1]]));
+            setIdProfessor(aux[1]);
+            limparFormulario();
+    
+            setExibirExcluir(true)
+    
+            document.querySelector('#btnSalvar').style.display = 'none';
+            document.querySelector('#btnCadastro').style.display = 'block';
+        }
     }
 
     return (
         <>
+        {isAlertaAtivo &&  <PopUp interruptor={alternarAlerta}/>}
             <div className="formContainer">
                 <div className="inputCombo">
                     <label>ID</label>
@@ -106,13 +129,14 @@ function CadProfessor() {
                 </div>
                 <div className="inputCombo">
                     <label>Telefone Celular</label>
-                    <input id="telefoneCelular" value={telefoneCelular} onChange={evt => setTelefoneCelular(evt.target.value)}></input>
+                    <input type="number" id="telefoneCelular" value={telefoneCelular} onChange={evt => setTelefoneCelular(evt.target.value)}></input>
                 </div>
                 <button id='btnCadastro' className='btnCadastro' onClick={cadastrarProfessor}>Cadastrar</button>
                 <button id='btnSalvar' className='btnCadastro' onClick={salvarProfessor} style={{ display: 'none' }}>Salvar</button>
             </div>
 
             <div className='dataSpace'>
+            <h2 className='titulo'> Cadastro de Professor</h2>
                 <tr>
                     <th>ID do Professor</th>
                     <th>Nome do Professor</th>

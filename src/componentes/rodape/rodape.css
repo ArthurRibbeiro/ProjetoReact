@@ -1,12 +1,15 @@
 .rodape{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
+    align-items: center;
     
-    background-color: #1dd1a1;
-    position: fixed;
+    background-color: #576574;
+    color: #222f3e;
+    position:fixed;
     bottom: 0;
 
-    width: 100%;
+    width: 90%;
+    padding: 1% 5% 1% 5% ;
     
 }

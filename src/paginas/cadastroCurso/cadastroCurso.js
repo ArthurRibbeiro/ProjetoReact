@@ -1,6 +1,8 @@
 
 
 import {useState} from 'react';
+import data from '../../componentes/recursos/data';
+import PopUp from '../../componentes/popup/popup';
 
 
 function CadCurso(){    
@@ -11,39 +13,50 @@ function CadCurso(){
     }
     const [exibirExcluir, setExibirExcluir] = useState(true)
 
+    const [isAlertaAtivo, setIsAlertaAtivo] = useState(false);
+    const alternarAlerta = () => {
+        setIsAlertaAtivo(!isAlertaAtivo);
+      };
+
     const aux = carrega()
     const [cursos, setCursos] = useState(aux[0]);
     
     const [idCurso, setIdCurso] = useState(aux[1])
     const [nomeCurso, setNomeCurso] = useState('')
-    const [dtInicioCurso, setDtInicioCurso] = useState('')
+    const [dtInicioCurso, setDtInicioCurso] = useState(data.hoje())
     const [nomeCoordCurso, setNomeCoordCurso] = useState('')
 
     function limpaForm(){
         setNomeCurso('')
-        setDtInicioCurso('')
+        setDtInicioCurso(data.hoje())
         setNomeCoordCurso('')
     }
 
-    
     function cadastrar() {
-        const novoCurso = {
-            idCurso : idCurso,
-            nomeCurso: nomeCurso,
-            dtInicioCurso: dtInicioCurso,
-            nomeCoordCurso: nomeCoordCurso,
-        } 
 
-        const newCursos = [ ...cursos, novoCurso]
+        if (nomeCurso == '' || nomeCoordCurso == ''){
+            
+            alternarAlerta()
 
-        localStorage.setItem("cursos", JSON.stringify([newCursos, idCurso + 1]));
-        setCursos(newCursos)
-        setIdCurso (idCurso + 1)
-        limpaForm()
+        }else{
+            
+            const novoCurso = {
+                idCurso : idCurso,
+                nomeCurso: nomeCurso,
+                dtInicioCurso: data.formatarParaDiaMesAno(dtInicioCurso),
+                nomeCoordCurso: nomeCoordCurso,
+            } 
+    
+            const newCursos = [ ...cursos, novoCurso]
+    
+            localStorage.setItem("cursos", JSON.stringify([newCursos, idCurso + 1]));
+            setCursos(newCursos)
+            setIdCurso (idCurso + 1)
+            limpaForm()
+        }
+
     }
 
-    
-    
     function excluir(evt){
         const elemID = evt.target.parentElement.parentElement.firstChild.innerText
         let index = 0
@@ -69,7 +82,7 @@ function CadCurso(){
             if (i.idCurso == elemID) {
                 setIdCurso(i.idCurso)
                 setNomeCurso(i.nomeCurso)
-                setDtInicioCurso(i.dtInicioCurso)
+                setDtInicioCurso(data.formatarParaAnoMesDia(i.dtInicioCurso))
                 setNomeCoordCurso(i.nomeCoordCurso)
             }else{
                 index ++
@@ -81,49 +94,50 @@ function CadCurso(){
             document.querySelector('#btnSalvar').style.display = 'block'
             
         })
-        
     }
     
     function salvar(){
 
-        const curso = {
-            idCurso : idCurso,
-            nomeCurso: nomeCurso,
-            dtInicioCurso: dtInicioCurso,
-            nomeCoordCurso: nomeCoordCurso,
-        } 
-        
-        let index = 0
-        const copiaCursos = [...cursos]
-        copiaCursos.map(i => {
-            if (i.idCurso == curso.idCurso) {
-                copiaCursos[copiaCursos.indexOf(i)] = curso
-            }else{
-                index ++
-            }})
+        if (nomeCurso == '' || nomeCoordCurso == ''){
+            
+            alternarAlerta()
 
-        setCursos(copiaCursos)
-
-        localStorage.setItem("cursos", JSON.stringify([copiaCursos, aux[1] ]));
-        setIdCurso(aux[1])
-        limpaForm()
-
-        setExibirExcluir(true)
-
-
-        document.querySelector('#btnSalvar').style.display = 'none'
-        document.querySelector('#btnCadastro').style.display = 'block'
-
-
+        }else{
+            const curso = {
+                idCurso : idCurso,
+                nomeCurso: nomeCurso,
+                dtInicioCurso: data.formatarParaDiaMesAno(dtInicioCurso),
+                nomeCoordCurso: nomeCoordCurso,
+            } 
+            
+            let index = 0
+            const copiaCursos = [...cursos]
+            copiaCursos.map(i => {
+                if (i.idCurso == curso.idCurso) {
+                    copiaCursos[copiaCursos.indexOf(i)] = curso
+                }else{
+                    index ++
+                }})
+    
+            setCursos(copiaCursos)
+    
+            localStorage.setItem("cursos", JSON.stringify([copiaCursos, aux[1] ]));
+            setIdCurso(aux[1])
+            limpaForm()
+    
+            setExibirExcluir(true)
+    
+    
+            document.querySelector('#btnSalvar').style.display = 'none'
+            document.querySelector('#btnCadastro').style.display = 'block'
+        }
     }
     
     return(
         <>
+        {isAlertaAtivo &&  <PopUp interruptor={alternarAlerta}/>}
         <div className="formContainer">
-                
-
-                
-
+            
             <div className="inputCombo">
                 <label>ID</label>
                 <input id="idCurso" readOnly  value={idCurso}></input>
@@ -150,6 +164,8 @@ function CadCurso(){
 
         </div>
             <div className='dataSpace'>
+
+            <h2 className='titulo'> Cadastro de Curso</h2>
 
                 <tr>
                     <th>ID</th>

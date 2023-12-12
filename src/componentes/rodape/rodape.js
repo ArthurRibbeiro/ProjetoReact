@@ -1,14 +1,29 @@
+import { useEffect } from 'react';
 import './rodape.css'
 
 function Rodape(){
+
+    
+    useEffect( () => {
+        const isScrollable = document.body.scrollHeight > window.innerHeight - (84 + document.querySelector('.rodape').style.height);
+    
+        if (isScrollable){
+            
+            document.querySelector(".rodape").style.position = "relative";
+            console.log("Scrollable");
+        }
+        
+    }, [])
+
+
+
+
     return(
         <div className="rodape">
             <div>
-                <h1> rodape</h1>
+                <h4>© 2023 Copyright - Todos os direitos reservados</h4>
             </div>
-            <div>
-                <h1> aaaaaaa</h1>
-            </div>
+            <h4>Arthur - React</h4>
 
         </div>
     )

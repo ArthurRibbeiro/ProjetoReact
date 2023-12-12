@@ -1,6 +1,9 @@
 
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import data from '../../componentes/recursos/data';
+import './cadastroDesafio.css'
+import PopUp from "../../componentes/popup/popup";
 
 function CadDesafio(){
 
@@ -11,27 +14,41 @@ function CadDesafio(){
 
 const [exibirExcluir, setExibirExcluir] = useState(true)
 
+
+    const [isAlertaAtivo, setIsAlertaAtivo] = useState(false);
+
+    const alternarAlerta = () => {
+        setIsAlertaAtivo(!isAlertaAtivo);
+      };
+
+
+
+
     const aux = carrega()
     const [desafios, setDesafios] = useState(aux[0]);
+
+    const [opcoesPeriodos, setOpcoesPeriodos] = useState([]);
+    const [opcoesProfessores, setOpcoesProfessores] = useState([]);
+    const [opcoesSalas, setOpcoesSalas] = useState([]);
     
     
     
     const [idDesafio, setIdDesafio] = useState(aux[1])
     const [nomeDesafio, setNomeDesafio] = useState('')
-    const [periodo, setPeriodo] = useState('')
+    const [periodos, setPeriodos] = useState('')
     const [professor, setProfessor] = useState('')
-    const [dtInicioDesafio, setDtInicioDesafio] = useState('')
-    const [dtFimDesafio, setDtFimDesafio] = useState('')
+    const [dtInicioDesafio, setDtInicioDesafio] = useState(data.hoje())
+    const [dtFimDesafio, setDtFimDesafio] = useState(data.hoje())
     const [diaSemana, setDiaSemana] = useState('')
     const [horario, setHorario] = useState('')
     const [sala, setSala] = useState('')
 
     function limpaForm(){
         setNomeDesafio('')
-        setPeriodo('')
+        setPeriodos('')
         setProfessor('') 
-        setDtInicioDesafio('')
-        setDtFimDesafio('')
+        setDtInicioDesafio(data.hoje())
+        setDtFimDesafio(data.hoje())
         setDiaSemana('')
         setHorario('')
         setSala('')
@@ -39,29 +56,39 @@ const [exibirExcluir, setExibirExcluir] = useState(true)
 
     
     function cadastrar() {
-        const novoDesafio = {
-            idDesafio: idDesafio,
-            nomeDesafio: nomeDesafio,
-            periodo: periodo,
-            professor: professor,
-            dtInicioDesafio: dtInicioDesafio,
-            dtFimDesafio: dtFimDesafio,
-            diaSemana: diaSemana,
-            horario: horario,
-            sala: sala,
-            
-        } 
 
-        const newDesafios = [ ...desafios, novoDesafio]
-
-        localStorage.setItem("desafios", JSON.stringify([newDesafios, idDesafio + 1]));
-        setDesafios(newDesafios)
-        setIdDesafio (idDesafio + 1)
-        limpaForm()
-
+        if (
+            nomeDesafio == '' || 
+            periodos == '' || 
+            professor == '' ||  
+            diaSemana == '' || 
+            horario == '' || 
+            sala == ''){
+                alternarAlerta()
+                
+            }else{
+                const novoDesafio = {
+                    idDesafio: idDesafio,
+                    nomeDesafio: nomeDesafio,
+                    periodos: periodos.join(' | '),
+                    professor: professor,
+                    dtInicioDesafio: data.formatarParaDiaMesAno(dtInicioDesafio),
+                    dtFimDesafio: data.formatarParaDiaMesAno(dtFimDesafio),
+                    diaSemana: diaSemana,
+                    horario: horario,
+                    sala: sala,
+                    
+                } 
+        
+                const newDesafios = [ ...desafios, novoDesafio]
+        
+                localStorage.setItem("desafios", JSON.stringify([newDesafios, idDesafio + 1]));
+                setDesafios(newDesafios)
+                setIdDesafio (idDesafio + 1)
+                limpaForm()
+                
+            }
     }
-
-    
     
     function excluir(evt){
         const elemID = evt.target.parentElement.parentElement.firstChild.innerText
@@ -81,10 +108,10 @@ const [exibirExcluir, setExibirExcluir] = useState(true)
 
         setIdDesafio(i.idDesafio)
         setNomeDesafio(i.nomeDesafio)
-        setPeriodo(i.periodo)
+        setPeriodos(i.periodos.split(' | '))
         setProfessor(i.professor) 
-        setDtInicioDesafio(i.dtInicioDesafio)
-        setDtFimDesafio(i.dtFimDesafio)
+        setDtInicioDesafio(data.formatarParaAnoMesDia(i.dtInicioDesafio))
+        setDtFimDesafio(data.formatarParaAnoMesDia(i.dtFimDesafio))
         setDiaSemana(i.diaSemana)
         setHorario(i.horario)
         setSala(i.sala)
@@ -100,46 +127,86 @@ const [exibirExcluir, setExibirExcluir] = useState(true)
     
     function salvar(){
 
-        const desafio = {
-            idDesafio: idDesafio,
-            nomeDesafio: nomeDesafio,
-            periodo: periodo,
-            professor: professor,
-            dtInicioDesafio: dtInicioDesafio,
-            dtFimDesafio: dtFimDesafio,
-            diaSemana: diaSemana,
-            horario: horario,
-            sala: sala,
-            
-        } 
-
-        const novosDesafios = desafios.map(d => (d.idDesafio === desafio.idDesafio ? desafio : d));
-        
-        let index = 0
-        const copiaDesafios = [...desafios]
-        copiaDesafios.map(i => {
-            if (i.idDesafio == desafio.idDesafio) {
-                copiaDesafios[copiaDesafios.indexOf(i)] = desafio
+        if (
+            nomeDesafio == '' || 
+            periodos == '' || 
+            professor == '' ||  
+            diaSemana == '' || 
+            horario == '' || 
+            sala == ''){
+                alternarAlerta()
+                
             }else{
-                index ++
-            }})
+                const desafio = {
+                    idDesafio: idDesafio,
+                    nomeDesafio: nomeDesafio,
+                    periodos: periodos.join(' | '),
+                    professor: professor,
+                    dtInicioDesafio: data.formatarParaDiaMesAno(dtInicioDesafio),
+                    dtFimDesafio: data.formatarParaDiaMesAno(dtFimDesafio),
+                    diaSemana: diaSemana,
+                    horario: horario,
+                    sala: sala,
+                    
+                } 
+        
+                const novosDesafios = desafios.map(d => (d.idDesafio === desafio.idDesafio ? desafio : d));
+                
+                let index = 0
+                const copiaDesafios = [...desafios]
+                copiaDesafios.map(i => {
+                    if (i.idDesafio == desafio.idDesafio) {
+                        copiaDesafios[copiaDesafios.indexOf(i)] = desafio
+                    }else{
+                        index ++
+                    }})
+        
+                setDesafios(copiaDesafios)
+        
+                localStorage.setItem("desafios", JSON.stringify([copiaDesafios, aux[1] ]));
+                setIdDesafio(aux[1])
+                limpaForm()
+        
+                setExibirExcluir(true)
+        
+                document.querySelector('#btnSalvar').style.display = 'none'
+                document.querySelector('#btnCadastro').style.display = 'block'
 
-        setDesafios(copiaDesafios)
-
-        localStorage.setItem("desafio", JSON.stringify([copiaDesafios, aux[1] ]));
-        setIdDesafio(aux[1])
-        limpaForm()
-
-        setExibirExcluir(true)
-
-        document.querySelector('#btnSalvar').style.display = 'none'
-        document.querySelector('#btnCadastro').style.display = 'block'
-
+            }
 
     }
+
+    const handlePeriodosChange = (evt) => {
+        const { value, checked } = evt.target;
+        console.log(checked);
+        console.log(value);
+    
+        // Se o checkbox foi marcado, adiciona ao array; caso contrário, remove
+        setPeriodos((prevPeriodos) =>
+          checked ? [...prevPeriodos, value] : prevPeriodos.filter((periodos) => periodos !== value)
+        );
+
+        console.log(periodos);
+        
+      };
+
+    useEffect(() => {    
+        const listaPeriodos = JSON.parse(localStorage.getItem('periodos'))[0] || [];
+        const listaProfessores = JSON.parse(localStorage.getItem('professores'))[0] || [];
+        const listaSalas = JSON.parse(localStorage.getItem('salas'))[0] || [];
+        setOpcoesPeriodos(listaPeriodos)
+        setOpcoesProfessores(listaProfessores)
+        setOpcoesSalas(listaSalas)
+        
+
+        
+    },[])
     
     return(
             <>
+            
+            {isAlertaAtivo &&  <PopUp interruptor={alternarAlerta}/>}
+
             <div className="formContainer">
 
                 <div className="inputCombo">
@@ -152,11 +219,45 @@ const [exibirExcluir, setExibirExcluir] = useState(true)
                 </div>
                 <div className="inputCombo">
                     <label>Períodos</label>
-                    <input id="periodos" value={periodo} onChange={evt => setPeriodo(evt.target.value)} ></input>
+
+                    <div className="periodosDropdownButton">
+
+                        <span>Passe o mouse</span>
+                        <span>selecione ao menos uma opção</span>
+                    <div className="periodoCheckboxBody">
+                        
+                        {opcoesPeriodos.map((opcao, index) => {
+                            return(
+                            <div className="checkCombo">
+                            <input
+                            type="checkbox"
+                            id={`${opcao.idPeriodo}, ${opcao.numeroPeriodo} periodo, ${opcao.curso}`}
+                            value={`${opcao.idPeriodo}, ${opcao.numeroPeriodo} periodo, ${opcao.curso}`}
+                            onChange={handlePeriodosChange}
+                            checked={periodos.includes(`${opcao.idPeriodo}, ${opcao.numeroPeriodo} periodo, ${opcao.curso}`)}
+                            />
+                            <label htmlFor={`${opcao.idPeriodo}, ${opcao.numeroPeriodo} periodo, ${opcao.curso}`}>{opcao.idPeriodo}, {opcao.numeroPeriodo} periodo, {opcao.curso}</label>
+                            </div>
+                            )
+                        })}
+                    </div>
+
+                    </div>
                 </div>
+
                 <div className="inputCombo">
                     <label>Professor</label>
-                    <input id="professor" value={professor} onChange={evt => setProfessor(evt.target.value)} ></input>
+                    <select  id="professor" value={professor} onChange={evt => setProfessor(evt.target.value)} >
+                        <option value="">--- Selecione uma opção ---</option>
+                        {opcoesProfessores.map((opcao, index) => {
+                            return(
+                            <option key={index} value={opcao.nomeProfessor}>
+                                {opcao.nomeProfessor}
+                            </option>
+
+                            )
+                        })}
+                    </select>
                 </div>
                 <div className="inputCombo">
                     <label>Data de Início</label>
@@ -168,15 +269,36 @@ const [exibirExcluir, setExibirExcluir] = useState(true)
                 </div>
                 <div className="inputCombo">
                     <label>Dia da semana</label>
-                    <input id="diaSemana" value={diaSemana} onChange={evt => setDiaSemana(evt.target.value)} ></input>
+
+                    <select  id="diaSemana" value={diaSemana} onChange={evt => setDiaSemana(evt.target.value)}>
+                        <option value="">--- Selecione uma opção ---</option>
+                        <option value="Segunda-feira">Segunda-feira</option>
+                        <option value="Terça-feira">Terça-feira</option>
+                        <option value="Quarta-feira">Quarta-feira</option>
+                        <option value="Quinta-feira">Quinta-feira</option>
+                        <option value="Sexta-feira">Sexta-feira</option>
+                        <option value="Sábado">Sábado</option>
+                        <option value="Domingo">Segunda-feira</option>
+                    </select>
                 </div>
                 <div className="inputCombo">
                     <label>Horário</label>
-                    <input id="horario" value={horario} onChange={evt => setHorario(evt.target.value)} ></input>
+                    <input type="time" id="horario" value={horario} onChange={evt => setHorario(evt.target.value)} ></input>
                 </div>
                 <div className="inputCombo">
                     <label>Sala</label>
-                    <input id="sala" value={sala} onChange={evt => setSala(evt.target.value)} ></input>
+                    <select id="sala" value={sala} onChange={evt => setSala(evt.target.value)} >
+                        <option value="">--- Selecione uma opção ---</option>
+                        {opcoesSalas.map((opcao, index) => {
+                            console.log(opcao.idCurso);
+                            return(
+                            <option key={index} value={`${opcao.numero}, ${opcao.andar} andar, ${opcao.predio}`}>
+                                {opcao.numero}, {opcao.andar} andar, {opcao.predio}
+                            </option>
+
+                            )
+                        })}
+                    </select>
                 </div>
                 
 
@@ -186,6 +308,7 @@ const [exibirExcluir, setExibirExcluir] = useState(true)
 
             
             <div className='dataSpace'>
+            <h2 className='titulo'> Cadastro de Desafio</h2>
             <tr>
                 <th>ID do desafio</th>
                 <th>Nome do desafio</th>
@@ -206,7 +329,7 @@ const [exibirExcluir, setExibirExcluir] = useState(true)
                         <tr>
                             <td>{i.idDesafio}</td>
                             <td>{i.nomeDesafio}</td>
-                            <td>{i.periodo}</td>
+                            <td>{i.periodos}</td>
                             <td>{i.professor}</td>
                             <td>{i.dtInicioDesafio}</td>
                             <td>{i.dtFimDesafio}</td>

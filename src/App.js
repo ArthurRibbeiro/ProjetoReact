@@ -12,8 +12,14 @@ import CadPeriodo from './paginas/cadastroPeriodo/cadastroPeriodo';
 import CadProfessor from './paginas/cadastroProfessor/cadastroProfessor';
 import CadSala from './paginas/cadastroSalas/cadastroSalas';
 import CadDesafio from './paginas/cadastroDesafio/cadastroDesafio';
+import Calendario from './paginas/calendario/calendario';
 
 const router = createBrowserRouter([
+
+  {
+    path: "/",
+    element: <></>,
+  },
   {
   path: "cadastro",
   element: <Cadastro.Cadastro />,
@@ -39,6 +45,9 @@ const router = createBrowserRouter([
       element: <CadDesafio />,
     },
   ],
+  },{
+    path: "calendario",
+    element: <Calendario mes1={11} ano1={2023}/> ,
   },
 ])
 

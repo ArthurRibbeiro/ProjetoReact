@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PopUp from "../../componentes/popup/popup";
 
 function CadSala() {
     function carregar() {
@@ -7,6 +8,11 @@ function CadSala() {
     }
 
     const [exibirExcluir, setExibirExcluir] = useState(true);
+
+    const [isAlertaAtivo, setIsAlertaAtivo] = useState(false);
+    const alternarAlerta = () => {
+        setIsAlertaAtivo(!isAlertaAtivo);
+      };
 
     const aux = carregar();
 
@@ -26,20 +32,30 @@ function CadSala() {
     }
 
     function cadastrarSala() {
-        const novaSala = {
-            idSala: idSala,
-            andar: andar,
-            numero: numero,
-            predio: predio,
-            numCadeiras: numCadeiras,
-        };
 
-        const novasSalas = [...salas, novaSala];
+        if (andar == "" ||
+            numero == "" ||
+            predio == "" ||
+            numCadeiras == ""){
+                alternarAlerta()
+            }else{
+                const novaSala = {
+                    idSala: idSala,
+                    andar: andar,
+                    numero: numero,
+                    predio: predio,
+                    numCadeiras: numCadeiras,
+                };
+        
+                const novasSalas = [...salas, novaSala];
+        
+                localStorage.setItem("salas", JSON.stringify([novasSalas, idSala + 1]));
+                setSalas(novasSalas);
+                setIdSala(idSala + 1);
+                limparFormulario();
 
-        localStorage.setItem("salas", JSON.stringify([novasSalas, idSala + 1]));
-        setSalas(novasSalas);
-        setIdSala(idSala + 1);
-        limparFormulario();
+            }
+
     }
 
     function excluirSala(evt) {
@@ -70,29 +86,41 @@ function CadSala() {
     }
 
     function salvarSala() {
-        const sala = {
-            idSala: idSala,
-            andar: andar,
-            numero: numero,
-            predio: predio,
-            numCadeiras: numCadeiras,
-        };
 
-        const novasSalas = salas.map(s => (s.idSala == sala.idSala ? sala : s));
-        setSalas(novasSalas);
 
-        localStorage.setItem("salas", JSON.stringify([novasSalas, aux[1]]));
-        setIdSala(aux[1]);
-        limparFormulario();
+        if (andar == "" ||
+        numero == "" ||
+        predio == "" ||
+        numCadeiras == ""){
+            alternarAlerta()
+        }else{
+            const sala = {
+                idSala: idSala,
+                andar: andar,
+                numero: numero,
+                predio: predio,
+                numCadeiras: numCadeiras,
+            };
+    
+            const novasSalas = salas.map(s => (s.idSala == sala.idSala ? sala : s));
+            setSalas(novasSalas);
+    
+            localStorage.setItem("salas", JSON.stringify([novasSalas, aux[1]]));
+            setIdSala(aux[1]);
+            limparFormulario();
+    
+            setExibirExcluir(true);
+    
+            document.querySelector('#btnSalvar').style.display = 'none';
+            document.querySelector('#btnCadastro').style.display = 'block';
 
-        setExibirExcluir(true);
-
-        document.querySelector('#btnSalvar').style.display = 'none';
-        document.querySelector('#btnCadastro').style.display = 'block';
+        }
+            
     }
 
     return (
         <>
+        {isAlertaAtivo &&  <PopUp interruptor={alternarAlerta}/>}
             <div className="formContainer">
                 <div className="inputCombo">
                     <label>ID</label>
@@ -100,11 +128,11 @@ function CadSala() {
                 </div>
                 <div className="inputCombo">
                     <label>Andar</label>
-                    <input id="andar" value={andar} onChange={evt => setAndar(evt.target.value)}></input>
+                    <input type="number" id="andar" value={andar} onChange={evt => setAndar(evt.target.value)}></input>
                 </div>
                 <div className="inputCombo">
                     <label>Número</label>
-                    <input id="numero" value={numero} onChange={evt => setNumero(evt.target.value)}></input>
+                    <input type="number" id="numero" value={numero} onChange={evt => setNumero(evt.target.value)}></input>
                 </div>
                 <div className="inputCombo">
                     <label>Prédio</label>
@@ -112,7 +140,7 @@ function CadSala() {
                 </div>
                 <div className="inputCombo">
                     <label>Número de Cadeiras</label>
-                    <input id="numCadeiras" value={numCadeiras} onChange={evt => setNumCadeiras(evt.target.value)}></input>
+                    <input type="number" id="numCadeiras" value={numCadeiras} onChange={evt => setNumCadeiras(evt.target.value)}></input>
                 </div>
 
                 <button id='btnCadastro' className='btnCadastro' onClick={cadastrarSala}>Cadastrar</button>
@@ -120,6 +148,7 @@ function CadSala() {
             </div>
 
             <div className='dataSpace'>
+            <h2 className='titulo'> Cadastro de Salas</h2>
                 <tr>
                     <th>ID da Sala</th>
                     <th>Andar</th>

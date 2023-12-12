@@ -1,0 +1,10 @@
+.checkboxBody{
+    display: flex;
+    flex-direction: row;
+
+}
+
+.checkboxBody input[type=checkbox]{
+    width: 100px;
+    margin-top: 20px ;
+}

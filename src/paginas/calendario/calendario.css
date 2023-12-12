@@ -1,0 +1,94 @@
+.tituloCalendario{
+    margin: 30px;
+    color: #10ac84;
+    font-size: 36px;
+}
+
+.calendario{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom:50px ;
+}
+
+.calendario h3{
+  font-size:24px ;
+  padding: 10px 0;
+  border-radius: 8px 8px 0 0 ;
+  color: #222f3e;
+  background-color: #10ac84;
+  width: 1050px;
+}
+
+.numero-grid {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .numero-card {
+    width: 150px;
+    height: 100px;
+    border: 1px solid #576574; 
+    background: #ffffff;
+    box-sizing: border-box;
+  }
+
+  .cardContent{
+    min-height: 80%;
+    overflow: hidden;
+    position:relative;
+    z-index: 1;
+    transition: all 0.3s ease; /* Adiciona uma transição suave */
+
+}
+.numero-card:hover .cardContent{
+    height: auto;
+  }
+  .numero-card:hover .cardContent{
+    height: auto;
+    position:relative;
+    z-index: 2;
+    background-color: #576574;
+  }
+
+  .cardContent:hover {
+    
+  }
+  
+  .numero-grid-row {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .cardHead{
+    height: 20%;
+    border-bottom:solid 1px #576574;
+    
+}
+
+.cardContent{
+    height: 80%;
+    font-size: 10px;
+}
+
+.topico{
+    margin: 3px 10px;
+    padding: 2px;
+    border-radius: 8px;
+    background-color: #10ac84;
+    color: white;
+    font-weight: bold;
+
+}
+
+.setaBtn{
+  color: #10ac84;
+  font-size: 58px;
+  font-weight: bold;
+  padding: 20px;
+
+  background: transparent;
+  border: 0;
+}
